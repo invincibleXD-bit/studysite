@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Сайт для учебы</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #f1f5f9;
+      background: linear-gradient(135deg, #1e1b4b, #0f172a);
+      transition: background 0.6s;
+    }
+    body.rest {
+      background: linear-gradient(135deg, #064e3b, #0f172a);
+    }
+
+    /* ----- общий вид карточек ----- */
+    .card {
+      width: 100%;
+      max-width: 440px;
+      margin: 16px;
+      padding: 40px 24px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      backdrop-filter: blur(10px);
+      animation: appear 0.6s ease both;
+    }
+    .hidden { display: none; }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ----- экран меню ----- */
+    .icon {
+      font-size: 64px;
+      margin-bottom: 8px;
+      display: inline-block;
+      transition: transform 0.4s;
+    }
+    #menu:hover .icon { transform: rotate(-10deg) scale(1.1); }
+
+    h1 { margin: 0 0 10px; font-size: 32px; }
+
+    .subtitle {
+      margin: 0 0 36px;
+      font-size: 17px;
+      color: #cbd5e1;
+    }
+
+    .start {
+      padding: 16px 44px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      background: #6366f1;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+      transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    }
+    .start:hover {
+      transform: scale(1.15);
+      background: #818cf8;
+      box-shadow: 0 12px 32px rgba(129, 140, 248, 0.55);
+    }
+    .start:active { transform: scale(1.05); }
+
+    /* ----- экран таймера ----- */
+    .back {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 0;
+      font-size: 15px;
+      color: #a5b4fc;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .back:hover { color: #fff; transform: translateX(-4px); }
+
+    #timerScreen h1 { font-size: 24px; margin-bottom: 20px; }
+
+    .modes { display: flex; gap: 8px; margin-bottom: 24px; }
+    .mode {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      color: #cbd5e1;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .mode:hover { transform: scale(1.05); }
+    .mode.active {
+      color: #fff;
+      background: #6366f1;
+      border-color: #6366f1;
+    }
+
+    .phase { font-size: 18px; margin-bottom: 4px; color: #a5b4fc; }
+    body.rest .phase { color: #6ee7b7; }
+
+    .time {
+      font-size: 84px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .buttons { display: flex; gap: 10px; margin: 24px 0; }
+    .buttons button {
+      flex: 1;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.2s, filter 0.2s;
+    }
+    #startBtn { background: #6366f1; }
+    #pauseBtn { background: #f59e0b; }
+    #resetBtn { background: #475569; }
+    .buttons button:hover { filter: brightness(1.15); transform: scale(1.06); }
+    .buttons button:active { transform: scale(0.97); }
+
+    .settings {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+    .settings input[type="number"] {
+      width: 56px;
+      padding: 6px;
+      margin-left: 6px;
+      text-align: center;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+    }
+
+    /* ----- звук ----- */
+    .sound {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+    .sound label { cursor: pointer; }
+    .sound input { margin-right: 6px; cursor: pointer; }
+    .test {
+      padding: 6px 12px;
+      font-size: 14px;
+      color: #e2e8f0;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .test:hover { transform: scale(1.08); background: rgba(255, 255, 255, 0.1); }
+
+    .stats { font-size: 16px; color: #e2e8f0; }
+    .stats b { font-size: 22px; color: #fbbf24; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Экран 1: меню ===== -->
+  <div class="card" id="menu">
+    <div class="icon">🎓</div>
+    <h1>Сайт для учебы</h1>
+    <p class="subtitle">Работай по 30 минут, отдыхай по 10 и не теряй концентрацию.</p>
+    <button class="start" id="openTimer">Начать</button>
+  </div>
+
+  <!-- ===== Экран 2: таймер ===== -->
+  <div class="card hidden" id="timerScreen">
+    <button class="back" id="backBtn">← В меню</button>
+    <h1>⏱ Учебный таймер</h1>
+
+    <div class="modes">
+      <button class="mode active">📚 Учусь новому</button>
+      <button class="mode">📝 Делаю д/з</button>
+    </div>
+
+    <div class="phase" id="phase">Работа</div>
+    <div class="time" id="time">30:00</div>
+
+    <div class="buttons">
+      <button id="startBtn">Старт</button>
+      <button id="pauseBtn">Пауза</button>
+      <button id="resetBtn">Сброс</button>
+    </div>
+
+    <div class="settings">
+      <label>Работа, мин <input type="number" id="workInput" value="30" min="1" max="120"></label>
+      <label>Отдых, мин <input type="number" id="restInput" value="10" min="1" max="60"></label>
+    </div>
+
+    <div class="sound">
+      <label><input type="checkbox" id="soundOn" checked>🔔 Звук</label>
+      <button class="test" id="testWork">Проверить: работа</button>
+      <button class="test" id="testRest">Проверить: отдых</button>
+    </div>
+
+    <div class="stats">Сегодня завершено циклов: <b id="count">0</b></div>
+  </div>
+
+  <script>
+    // ----- переключение экранов -----
+    const menuEl = document.getElementById("menu");
+    const timerScreenEl = document.getElementById("timerScreen");
+
+    function showTimer() {
+      menuEl.classList.add("hidden");
+      timerScreenEl.classList.remove("hidden");
+    }
+    function showMenu() {
+      pause();
+      timerScreenEl.classList.add("hidden");
+      menuEl.classList.remove("hidden");
+      document.body.classList.remove("rest");
+      document.title = "Сайт для учебы";
+    }
+    document.getElementById("openTimer").onclick = showTimer;
+    document.getElementById("backBtn").onclick = showMenu;
+
+    // ----- элементы таймера -----
+    const phaseEl = document.getElementById("phase");
+    const timeEl = document.getElementById("time");
+    const countEl = document.getElementById("count");
+    const workInput = document.getElementById("workInput");
+    const restInput = document.getElementById("restInput");
+    const soundOn = document.getElementById("soundOn");
+
+    // ----- состояние -----
+    let phase = "work";        // "work" или "rest"
+    let remaining = 30 * 60;   // секунд осталось
+    let timerId = null;        // id таймера, если идёт отсчёт
+    let endTime = 0;           // когда закончится текущая фаза
+
+    // ----- звук-будильник -----
+    // Браузер разрешает звук только после клика, поэтому аудио включаем по кнопкам.
+    let audioCtx = null;
+
+    function unlockAudio() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === "suspended") audioCtx.resume();
+      } catch (e) {}
+    }
+
+    // Одна нота: частота, когда начать (сек), длительность (сек)
+    function playNote(freq, when, length) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, when);
+      gain.gain.exponentialRampToValueAtTime(0.35, when + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, when + length);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(when);
+      osc.stop(when + length + 0.05);
+    }
+
+    // kind = "work" (пора работать, мелодия вверх) или "rest" (отдых, мелодия вниз)
+    function playAlarm(kind) {
+      if (!soundOn.checked) return;
+      unlockAudio();
+      if (!audioCtx) return;
+
+      const up   = [523, 659, 784, 1047];   // до, ми, соль, до (выше)
+      const down = [784, 659, 523, 392];    // соль, ми, до, соль (ниже)
+      const notes = kind === "work" ? up : down;
+
+      const step = 0.28;                    // пауза между нотами
+      const start = audioCtx.currentTime + 0.05;
+
+      // мелодия повторяется 3 раза, как у будильника
+      for (let repeat = 0; repeat < 3; repeat++) {
+        notes.forEach(function (freq, i) {
+          playNote(freq, start + repeat * (notes.length * step + 0.35) + i * step, 0.25);
+        });
+      }
+    }
+
+    // ----- счётчик циклов за сегодня (хранится в браузере) -----
+    function today() {
+      return new Date().toISOString().slice(0, 10);
+    }
+    function loadCount() {
+      try {
+        const data = JSON.parse(localStorage.getItem("studyStats"));
+        if (data && data.date === today()) return data.count;
+      } catch (e) {}
+      return 0;
+    }
+    function saveCount(count) {
+      try {
+        localStorage.setItem("studyStats", JSON.stringify({ date: today(), count: count }));
+      } catch (e) {}
+    }
+    let cycles = loadCount();
+    countEl.textContent = cycles;
+
+    // ----- вспомогательные функции -----
+    function workSeconds() { return (parseInt(workInput.value) || 30) * 60; }
+    function restSeconds() { return (parseInt(restInput.value) || 10) * 60; }
+
+    function render() {
+      const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+      const s = String(remaining % 60).padStart(2, "0");
+      timeEl.textContent = m + ":" + s;
+      phaseEl.textContent = phase === "work" ? "Работа" : "Отдых ☕";
+      document.body.classList.toggle("rest", phase === "rest");
+      document.title = m + ":" + s + " — Учебный таймер";
+    }
+
+    // ----- ход таймера -----
+    function tick() {
+      remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+      render();
+
+      if (remaining === 0) {
+        if (phase === "work") {
+          cycles++;
+          countEl.textContent = cycles;
+          saveCount(cycles);
+          phase = "rest";
+          remaining = restSeconds();
+          playAlarm("rest");     // начался отдых
+        } else {
+          phase = "work";
+          remaining = workSeconds();
+          playAlarm("work");     // снова работа
+        }
+        endTime = Date.now() + remaining * 1000;
+        render();
+      }
+    }
+
+    function start() {
+      unlockAudio();             // включаем звук по клику
+      if (timerId) return;
+      endTime = Date.now() + remaining * 1000;
+      timerId = setInterval(tick, 250);
+    }
+
+    function pause() {
+      clearInterval(timerId);
+      timerId = null;
+    }
+
+    function reset() {
+      pause();
+      phase = "work";
+      remaining = workSeconds();
+      render();
+    }
+
+    // ----- кнопки таймера -----
+    document.getElementById("startBtn").onclick = start;
+    document.getElementById("pauseBtn").onclick = pause;
+    document.getElementById("resetBtn").onclick = reset;
+
+    document.getElementById("testWork").onclick = function () { playAlarm("work"); };
+    document.getElementById("testRest").onclick = function () { playAlarm("rest"); };
+
+    // выбор режима (просто подпись, что ты сейчас делаешь)
+    document.querySelectorAll(".mode").forEach(function (btn) {
+      btn.onclick = function () {
+        document.querySelectorAll(".mode").forEach(function (b) { b.classList.remove("active"); });
+        btn.classList.add("active");
+      };
+    });
+
+    // если поменял минуты и таймер не идёт, обновить время на экране
+    function onSettingsChange() {
+      if (!timerId) {
+        remaining = phase === "work" ? workSeconds() : restSeconds();
+        render();
+      }
+    }
+    workInput.onchange = onSettingsChange;
+    restInput.onchange = onSettingsChange;
+
+    // первый показ времени (заголовок вкладки при этом остаётся «Сайт для учебы»)
+    (function init() {
+      const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+      const s = String(remaining % 60).padStart(2, "0");
+      timeEl.textContent = m + ":" + s;
+    })();
+  </script>
+</body>
+</html>
